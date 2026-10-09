@@ -43,7 +43,7 @@ def getdf(path):
 
 @st.cache_data
 def load_data():
-    df = getdf("Movies_and_TV_5.json.gz")
+    df = getdf("demo_reviews.json.gz")
 
     user_matrix = df.pivot_table(index="reviewerID", columns="asin", values="adjusted_rating", fill_value=0)
     sparse_matrix = sp.csr_matrix(user_matrix.values)    
@@ -53,7 +53,7 @@ def load_data():
 @st.cache_data
 def load_titles():
     title_dict = {}
-    path = "meta_Movies_and_TV.jsonl"
+    path = "demo_meta.jsonl"
     
     with open(path, 'r', encoding='utf-8') as f:
         for line in f:

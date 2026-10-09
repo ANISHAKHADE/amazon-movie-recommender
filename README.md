@@ -2,9 +2,10 @@
 
 A local Streamlit application that recommends movies and TV products from Amazon review data. Select one of the 50 most active reviewers in the loaded sample and request up to three recommendations based on similar reviewers. If collaborative recommendations are unavailable, the app falls back to popular unseen products.
 
-## Live app
+## Project links
 
-The deployed Streamlit app is available at [Amazon Movie Recommender](https://amazon-movie-recommender-zgeeintsbmzfxrevz66jzx.streamlit.app/).
+- **GitHub repository:** [ANISHAKHADE/amazon-movie-recommender](https://github.com/ANISHAKHADE/amazon-movie-recommender)
+- **Live Streamlit app:** [Amazon Movie Recommender](https://amazon-movie-recommender-zgeeintsbmzfxrevz66jzx.streamlit.app/)
 
 ## Features
 
@@ -34,9 +35,11 @@ If that step produces no recommendations, the app ranks unseen products by the s
 | Path | Role |
 |---|---|
 | `app.py` | Streamlit entry point; reads datasets, constructs the ratings matrix, performs recommendations, and renders the UI. |
-| `Movies_and_TV_5.json.gz` | Compressed line-delimited review data used by the application. |
-| `meta_Movies_and_TV.jsonl` | Line-delimited product metadata used to map product IDs to titles. |
+| `demo_reviews.json.gz` | Compressed line-delimited review sample used by the application. |
+| `demo_meta.jsonl` | Product metadata sample used to map product IDs to titles. |
 | `Untitled-1.py` | Earlier standalone experimentation script. It uses a hard-coded Windows path and computes a dense similarity matrix; use `app.py` to run the current app. |
+| `shrinker.py` | Utility for generating the demo datasets from the full source datasets. |
+| `requirements.txt` | Pinned Python dependencies for the application. |
 | `TESTING-LOG.md` | Detailed test history and results, including all 50 users' recommendations. |
 | `.gitignore` | Excludes the local virtual environment and Python bytecode cache. |
 
@@ -45,9 +48,8 @@ The application is a **single-page Python/Streamlit web app**. There is no separ
 ## Requirements
 
 - Python 3.11 is the tested runtime (tested with Python 3.11.9).
-- The two dataset files listed above must be present in the project root, beside `app.py`.
-- Python packages: `pandas`, `numpy`, `scipy`, `scikit-learn`, and `streamlit`.
-- The repository currently has no `requirements.txt`, `pyproject.toml`, or other dependency lock/manifest file.
+- The two demo dataset files listed above must be present in the project root, beside `app.py`. They are included in the GitHub repository.
+- Dependency versions are pinned in `requirements.txt`; install them with the command below.
 
 The versions in the environment used for the successful app test were:
 
@@ -67,14 +69,14 @@ Open PowerShell in the project root (the directory containing `app.py` and the d
 py -3.11 -m venv myyenv
 .\myyenv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-python -m pip install pandas numpy scipy scikit-learn streamlit
+python -m pip install -r requirements.txt
 python -m streamlit run app.py
 ```
 
 If PowerShell prevents virtual-environment activation, invoke the environment's Python directly:
 
 ```powershell
-.\myyenv\Scripts\python.exe -m pip install pandas numpy scipy scikit-learn streamlit
+.\myyenv\Scripts\python.exe -m pip install -r requirements.txt
 .\myyenv\Scripts\python.exe -m streamlit run app.py
 ```
 
@@ -82,10 +84,12 @@ Streamlit prints the local URL after startup (normally `http://localhost:8501`).
 
 ## Data and runtime notes
 
-- Review data is read from the beginning of `Movies_and_TV_5.json.gz`; processing stops after **25,000 reviews**.
+- Review data is read from `demo_reviews.json.gz`; the app processes up to **25,000 reviews**.
 - In the tested sample, those rows contained **20,424 reviewers** and **191 product IDs**. The UI selector shows the 50 reviewers with the most positive adjusted-rating entries in that sample, labeled `User 1` through `User 50`.
-- The supplied review and metadata files are large (approximately **791 MB** compressed reviews and **1.29 GB** metadata in the tested project copy). The metadata loader reads the JSONL file and stores title mappings in memory. Initial startup may therefore take time and use substantial memory.
-- Sparse, on-demand cosine similarity avoids building a dense all-reviewer similarity matrix, but startup still loads the review sample and metadata.
+- The demo files are reduced samples intended to keep the repository and hosted app practical to run. The full source datasets (`Movies_and_TV_5.json.gz` and `meta_Movies_and_TV.jsonl`) are not included in the repository.
+- `shrinker.py` reads those full source datasets from the project root and generates the demo files. Run it only when both source datasets are available.
+- The metadata loader reads the demo JSONL file and stores title mappings in memory during app startup.
+- Sparse, on-demand cosine similarity avoids building a dense all-reviewer similarity matrix.
 - Some recommended product IDs may not have titles in the supplied metadata; these appear as `Title Not Found`.
 - Streamlit currently reports that `use_container_width` is deprecated. This is a warning, not a runtime failure.
 
@@ -105,6 +109,7 @@ For the per-user IDs and chronological record of earlier path/startup blockers, 
 ## Known limitations
 
 - Results are based only on the first 25,000 reviews, not the full review file.
+- The repository includes reduced demo datasets, not the complete source datasets.
 - The recommendation method is neighborhood-based collaborative filtering with a popularity fallback; it does not use movie content, genres, or external services.
 - Missing title records reduce the readability of some results, although recommendations still return.
-- Dependencies are not pinned in a project manifest, so fresh installs may resolve different package versions.
+- Dependency versions are pinned in `requirements.txt`; changing those pins should be followed by a fresh environment and app test.

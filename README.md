@@ -2,6 +2,10 @@
 
 A local Streamlit application that recommends movies and TV products from Amazon review data. Select one of the 50 most active reviewers in the loaded sample and request up to three recommendations based on similar reviewers. If collaborative recommendations are unavailable, the app falls back to popular unseen products.
 
+## Live app
+
+The deployed Streamlit app is available at [Amazon Movie Recommender](https://amazon-movie-recommender-zgeeintsbmzfxrevz66jzx.streamlit.app/).
+
 ## Features
 
 - Builds a reviewer-by-product ratings matrix from the review dataset.
@@ -93,6 +97,7 @@ On 2026-10-09, the app was started and exercised using Streamlit's app test runn
 - The popularity fallback was used for 18 users.
 - All returned match scores were positive.
 - A live HTTP smoke test returned `ok` from `/_stcore/health` and HTTP 200 from the homepage. A browser smoke test confirmed the page and User 1's results rendered.
+- The deployed Streamlit URL was also opened and tested: data loaded, the 50-user selector appeared, and User 1's recommendation table rendered after clicking **Find Movies**.
 - In the 50-user run, 16 recommendation rows showed `Title Not Found`.
 
 For the per-user IDs and chronological record of earlier path/startup blockers, see [TESTING-LOG.md](./TESTING-LOG.md).
